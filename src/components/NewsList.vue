@@ -14,12 +14,16 @@
 				<img v-if="item.images" :src="item.images[0]"/>
 			</li>
 		</ul>
+		<div class="loading" v-if="loadingState">
+			<i class="fa fa-spinner fa-pulse fa-fw"></i>
+			<span class="sr-only">Loading...</span>
+		</div>
 	</div>
 </template>
 
 <script>
 export default {
-  props: ['stories', 'editorsData'],
+  props: ['stories', 'editorsData', 'loadingState'],
   name: 'newsList',
   methods: {
     detailContent (key, index) {
@@ -37,7 +41,7 @@ export default {
 
 <style scoped>
 .stories-view {
-	padding-bottom: .2rem;
+	padding-bottom: .5rem;
 	background-color: #f0f0f0;
 }
 .list-title, .editors {
@@ -77,5 +81,15 @@ export default {
 .stories-list img {
 	width: 25%;
 	max-width: 120px;
+}
+.loading {
+	margin: .3rem;
+	height: 1.5rem;
+	line-height: 1.5rem;
+	text-align: center;
+	background-color: #fff;
+}
+.loading .sr-only {
+	position: static;
 }
 </style>

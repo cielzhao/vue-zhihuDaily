@@ -14,7 +14,7 @@
           <span><span v-if="!extraData.comments">...</span>{{extraData.comments}}</span>
         </i>
         <i class="fa fa-thumbs-up" :class="{upvote:upvoteState}" @click="upvoteToggle" aria-hidden="true">
-          <span><span v-if="!extraData.popularity">...</span>{{extraData.popularity}}</span>
+          <span><span v-if="!extraData.popularity">...</span>{{this.popularity}}</span>
         </i>
       </div>
     </header>
@@ -22,6 +22,7 @@
     <div class="top-stories-view" v-if="contentData.image" :style="{backgroundImage: 'url(' + contentData.image + ')'}">
     	<h2 class="img-title">{{contentData.title}}</h2>
     	<span class="img-source">{{contentData.image_source}}</span>
+    	<div class="swiper-mask"></div>
     </div>
     <!--内容详情-->
     <div class="content-view" :class="{imgNone:contentData.image}" v-html="contentData.body"></div>
@@ -54,7 +55,8 @@ export default {
       contentId: '',
       extraData: '',
       shareState: false,
-      upvoteState: false
+      upvoteState: false,
+      popularity: ''
     }
   },
   created () {
@@ -73,6 +75,7 @@ export default {
       this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/contents/extra/' + this.contentId).then(function (data) {
         console.log(data)
         this.extraData = data.body.DES
+        this.popularity = this.extraData.popularity
       }, function (response) {
         console.log('请求失败')
       })
@@ -93,8 +96,10 @@ export default {
     upvoteToggle () {
       if (this.upvoteState) {
         this.upvoteState = false
+        this.popularity = this.popularity - 1
       } else {
         this.upvoteState = true
+        this.popularity = this.popularity + 1
       }
     },
     goLogin () {
@@ -128,10 +133,14 @@ export default {
 	position: relative;
 	margin-top: 1.5rem;
 	height: 6rem;
+	background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: cover;
 }
 .img-title {
 	position: absolute;
 	bottom: 15px;
+	z-index: 1;
 	padding: .3rem .4rem;
 	color: #fff;
 	font-size: .6rem;
@@ -140,8 +149,10 @@ export default {
 .img-source {
 	position: absolute;
 	right: 10px;
-	bottom: 5px;
-	color: #fff;
+	bottom: 7px;
+	z-index: 1;
+	color: #eee;
+	font-size: 12px;
 }
 .content-view {
   margin-top: 1.5rem;
@@ -186,5 +197,15 @@ export default {
 }
 .icon-list li {
 	list-style: none;
+}
+.swiper-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 0;
+	width: 100%;
+	height: 100%;
+	background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.1) 40%, rgba(0, 0, 0, 0.5) 100%, #FFFFFF 100%);
 }
 </style>

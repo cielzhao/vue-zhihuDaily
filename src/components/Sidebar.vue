@@ -46,11 +46,11 @@ export default {
   },
   methods: {
     fetchData () {
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/themes').then(function (data) {
-        this.themes = data.body.THEMES.others
-      }, function (response) {
-        console.log('请求失败')
-      })
+//    this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/themes').then(function (data) {
+//      this.themes = data.body.THEMES.others
+//    }, function (response) {
+//      console.log('请求失败')
+//    })
     },
     themesContent (index) {
       this.themesId = JSON.stringify(this.themes[index].id)

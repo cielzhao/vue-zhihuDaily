@@ -37,9 +37,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 100%;
 }
 .noscroll {
+	position: fixed;
 	overflow: hidden;
 }
 #app {
@@ -55,7 +57,7 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 1;
+	z-index: 2;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
