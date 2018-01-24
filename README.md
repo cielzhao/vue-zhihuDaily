@@ -1,2 +1,2 @@
 # vue-zhihuDaily
-a vue test for zhihuDaily
+a vue test for zhihuDaily.
