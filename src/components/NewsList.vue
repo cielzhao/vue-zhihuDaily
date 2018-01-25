@@ -2,7 +2,6 @@
 	<div class="stories-view">
 		<ul class="stories-view-list" v-for="(items, key) in stories">
 			<!--今日热闻标题-->
-			<!--<div v-if="!editorsData" class="list-title">今日热闻</div>-->
 			<div v-if="!editorsData" class="list-title">{{items.date}}</div>
 			<!--主编头像-->
 			<div v-if="editorsData" class="editors" @click="editorsContent">
@@ -41,7 +40,7 @@ export default {
 
 <style scoped>
 .stories-view {
-	padding-bottom: .5rem;
+	padding-bottom: .1rem;
 	background-color: #f0f0f0;
 }
 .list-title, .editors {
@@ -66,20 +65,25 @@ export default {
 	align-items: center;
 	margin: .3rem;
 	padding: .5rem;
-	height: 3rem;
+	height: 2.5rem;
 	background-color: #fff;
 	box-shadow: 1px 2px 3px #bdbdbd;
 	border-radius: 4px;
 }
 .stories-list h3 {
-	padding-right: .4rem;
+  display:-webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+	-webkit-box-orient:vertical;
+	-webkit-line-clamp:3;
 	width: 75%;
+	height: 2rem;
 }
 .stories-list h3.imgNone {
 	width: 100%;
 }
 .stories-list img {
-	width: 25%;
+	width: 22%;
 	max-width: 120px;
 }
 .loading {

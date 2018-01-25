@@ -31,6 +31,8 @@
 
 <script>
 import avatar from '../assets/img/avatar.jpg'
+import axios from 'axios'
+import api from '../api/api.js'
 export default {
 	props: ['haswatch'],
   name: 'sidebar',
@@ -46,14 +48,16 @@ export default {
   },
   methods: {
     fetchData () {
-//    this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/themes').then(function (data) {
-//      this.themes = data.body.THEMES.others
-//    }, function (response) {
-//      console.log('请求失败')
-//    })
+    	var _this = this
+    	const themesUrl = api.themes
+      axios.get(themesUrl).then(function (response) {
+        _this.themes = response.data.THEMES.others
+      }, function (error) {
+        console.log('请求失败')
+      })
     },
     themesContent (index) {
-      this.themesId = JSON.stringify(this.themes[index].id)
+    	this.themesId = this.themes[index].id
       // 先进入一个空路由
 			this.$router.replace({
 			  path: '/_empty',
@@ -66,6 +70,7 @@ export default {
 			  }
 			})
 			document.getElementsByTagName('body')[0].className='';
+
     },
     goHome() {
 			this.$router.replace({
@@ -73,7 +78,7 @@ export default {
 			})
 			this.$router.replace({path: '/'})
 			document.getElementsByTagName('body')[0].className='';
-    }
+   }
   }
 }
 </script>

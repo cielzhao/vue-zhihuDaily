@@ -41,7 +41,7 @@ body {
   height: 100%;
 }
 .noscroll {
-	position: fixed;
+	/*position: fixed;*/
 	overflow: hidden;
 }
 #app {
@@ -50,7 +50,7 @@ body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #333;
+  color: #222;
   font-size: .4rem;
 }
 .header {

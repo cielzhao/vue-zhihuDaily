@@ -30,6 +30,8 @@
 import Drawer from './Drawer'
 import NewsList from './NewsList'
 import Sidebar from './Sidebar'
+import axios from 'axios'
+import api from '../api/api.js'
 export default {
   name: 'themesView',
   components: {
@@ -67,12 +69,14 @@ export default {
       console.log(state)
     },
     fetchData () {
+    	var _this = this
       this.themeId = window.location.href.split('?')[1].split('=')[1]
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/themes/' + this.themeId).then(function (data) {
-//      console.log(data)
-        this.themesContent.push(data.body.THEMEDES)
-        this.themesData = this.themesContent[0]
-      }, function (response) {
+      const themesUrl = api.themes + this.themeId
+      axios.get(themesUrl).then(function (response) {
+        console.log(response)
+        _this.themesContent.push(response.data.THEMEDES)
+        _this.themesData = _this.themesContent[0]
+      }, function (error) {
         console.log('请求失败')
       })
     },

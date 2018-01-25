@@ -44,6 +44,8 @@
 
 <script>
 import Share from './Share'
+import axios from 'axios'
+import api from '../api/api.js'
 export default {
   name: 'detail',
   components: {
@@ -64,19 +66,23 @@ export default {
   },
   methods: {
     fetchData () {
+    	var _this = this
       this.contentId = window.location.href.split('?')[1].split('=')[1]
       sessionStorage.setItem('commentsId', JSON.stringify(this.contentId))
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/contents/' + this.contentId).then(function (data) {
-        console.log(data)
-        this.contentData = data.body.CONTENTS
-      }, function (response) {
+      const contentsUrl = api.contents + this.contentId
+      axios.get(contentsUrl).then(function (response) {
+        console.log(response)
+        _this.contentData = response.data.CONTENTS
+      }, function (error) {
         console.log('请求失败')
       })
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/contents/extra/' + this.contentId).then(function (data) {
-        console.log(data)
-        this.extraData = data.body.DES
-        this.popularity = this.extraData.popularity
-      }, function (response) {
+
+      const extrasUrl = api.extra + this.contentId
+      axios.get(extrasUrl).then(function (response) {
+        console.log(response)
+        _this.extraData = response.data.DES
+        _this.popularity = _this.extraData.popularity
+      }, function (error) {
         console.log('请求失败')
       })
     },
@@ -85,7 +91,7 @@ export default {
     },
     themesContent () {
       const themesId = this.contentData.theme.id
-      this.$router.push({path: '/themesView', query: {themesId: themesId}})
+      this.$router.push({path: '/', query: {themesId: themesId}})
     },
     shareShow () {
       this.shareState = true

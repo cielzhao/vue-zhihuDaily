@@ -18,7 +18,7 @@
 		<!--图片切换-->
 		<home-slider :topStories="topStories" class="mySwiper"></home-slider>
 		<!--文章列表-->
-		<news-list :stories="stories" :loadingState="loadingState"></news-list>
+		<news-list :stories="stories" :loadingState="loadingState" :editorsData="editorsData"></news-list>
   </drawer>
 </template>
 
@@ -28,6 +28,7 @@ import HomeSlider from './HomeSlider'
 import NewsList from './NewsList'
 import Sidebar from './Sidebar'
 import axios from 'axios'
+import api from '../api/api.js'
 
 var count = 0;
 export default {
@@ -41,14 +42,16 @@ export default {
       stories: [],
       homeStr: '首页',
       fullscreenLoading: true,
-      loadingState: true
+      loadingState: false,
+      editorsData: '',
+      isThemes: false
     }
   },
   created () {
     this.fetchData()
-    this.addInterceptors()
   },
   mounted() {
+  		//日期格式化函数
   		Date.prototype.format = function(format) {
       var date = {
               "M+": this.getMonth() + 1,
@@ -74,7 +77,7 @@ export default {
 		var dateArray = [];
 		var dateTemp;
 		var curDate = newDate.format('yyyyMMdd')
-		//目前获取前十天数据
+		//目前只获取过去十天的数据
 		for (var i = 0; i < 10; i++) {
 	    dateTemp = curDate - i;
 	    dateArray.push(dateTemp);
@@ -82,7 +85,8 @@ export default {
 //		console.log(dateArray)
 
 		var _this = this
-    window.addEventListener('scroll',function(){
+		//屏幕滚动监听
+		window.addEventListener('scroll',function(){
   		//窗口高度
   		var winHeight = window.innerHeight
   		//总高度
@@ -93,48 +97,46 @@ export default {
   		//判断是否滑动到底部
 			if(winHeight + scrollTop === conHeight) {
 				count++
-				_this.loadingState = true
-				var t = setInterval(() => {
-          _this.loadingState = false
-        }, 1000);
-				clearInterval(t)
-				_this.fetchBeforeData(dateArray[count-1])
+				if(count <= 10) {
+					_this.fetchBeforeData(dateArray[count-1])
+				}
 			}
-
 
 			//每一个storiesView滑动到顶部时显示相应的标题
 			var headerHeight = document.getElementsByClassName("header")[0].offsetHeight
 			var storiesViewList = document.getElementsByClassName("stories-view-list")
 			for(var j = 0; j < storiesViewList.length; j++) {
 				var height = storiesViewList[j].getBoundingClientRect().top
-				var str = storiesViewList[j].getElementsByClassName('list-title')[0].innerText
-				if(height < headerHeight) {
-					_this.homeStr = str
+				if(storiesViewList[j].getElementsByClassName('list-title').length > 0) {
+					var str = storiesViewList[j].getElementsByClassName('list-title')[0].innerText
+					if(height < headerHeight) {
+						_this.homeStr = str
+					}
 				}
 			}
 
 			//滑动到最顶部时显示'首页'
-			var swiperHeight = document.getElementsByClassName("top-stories-view")[0].offsetHeight
-			if(scrollTop < swiperHeight) {
+			if(scrollTop < 190) {
 				_this.homeStr = '首页'
 			}
 	  })
   },
   methods: {
-    directionFlip() {
+    directionFlip () {
    	 this.drawerToggle()
    	 console.log(this.drawerShow)
     },
-    drawerToggle() {
+    drawerToggle () {
       this.drawerShow=!this.drawerShow
     },
-    changeDrawerShow(state) {
+    changeDrawerShow (state) {
       this.drawerShow=state;
       console.log(state)
     },
     fetchData () {
     	var _this = this
-      axios.get('https://zhihu-daily.leanapp.cn/api/v1/last-stories').then(function (response) {
+    	const lastStoriesUrl = api.lastStories
+      axios.get(lastStoriesUrl).then(function (response) {
       	console.log(response)
 				_this.fullscreenLoading = false
         _this.topStories = response.data.STORIES.top_stories
@@ -143,33 +145,15 @@ export default {
 					"stories": response.data.STORIES.stories
         }
         _this.stories.push(obj)
-				_this.openFullScreen()
       }).catch((error) => {
         console.log(error)
       })
     },
-    addInterceptors () {
-      axios.interceptors.request.use(function (config) {
-        // Do something before request is sent
-        console.log('开始请求')
-        return config
-      }, function (error) {
-        // Do something with request error
-        console.log('请求失败')
-        return Promise.reject(error)
-      })
-      axios.interceptors.response.use(function (response ) {
-        console.log('接收响应')
-        return response
-      }, function (error) {
-        // Do something with request error
-        console.log('响应出错')
-        return Promise.reject(error)
-      })
-    },
     fetchBeforeData (date) {
     	var _this = this
-      axios.get('https://zhihu-daily.leanapp.cn/api/v1/before-stories/' + date).then(function (response) {
+    	const beforeStoriesUrl = api.beforeStories + date
+    	_this.addInterceptors()
+      axios.get(beforeStoriesUrl).then(function (response) {
 //    	console.info(data)
         var myDate = response.data.STORIES.date
         var dateArr = myDate.split('')
@@ -190,30 +174,40 @@ export default {
         console.log('请求失败')
       })
     },
+    addInterceptors () {
+    	var _this = this
+    	// Add a request interceptor
+      axios.interceptors.request.use(function (config) {
+        // Do something before request is sent
+//      console.log('开始请求')
+				_this.loadingState = true
+        return config
+      }, function (error) {
+        // Do something with request error
+//      console.log('请求失败')
+        return Promise.reject(error)
+      })
+
+      // Add a response interceptor
+      axios.interceptors.response.use(function (response) {
+      	// Do something with response data
+//      console.log('接收响应')
+        _this.loadingState = false
+        return response
+      }, function (error) {
+        // Do something with response error
+//      console.log('响应出错')
+        return Promise.reject(error)
+      })
+    },
     goLogin () {
       this.$router.push({path: '/login'})
     },
-    onShow() {
+    onShow () {
 	    document.getElementsByTagName('body')[0].className='noscroll';
     },
-    onHide() {
+    onHide () {
 	    document.getElementsByTagName('body')[0].className='';
-    },
-    openFullScreen() {
-//    this.fullscreenLoading = true;
-      setTimeout(() => {
-//      this.fullscreenLoading = false;
-      }, 500);
-    },
-    openFullScreen2() {
-//    const loading = this.$loading({
-//      lock: true,
-//      text: 'Loading',
-//      spinner: 'el-icon-loading'
-//    });
-//    setTimeout(() => {
-//      loading.close();
-//    }, 1000);
     }
   },
   components: {

@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+import api from '../api/api.js'
 export default {
   name: 'editors',
   data () {
@@ -79,18 +81,22 @@ export default {
   },
   methods: {
     fetchData () {
+    	var _this = this
       const commentsId = JSON.parse(sessionStorage.getItem('commentsId'))
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/contents/' + commentsId + '/long-comments').then(function (data) {
-        console.log(data)
-        this.longComments = data.body.COMMENTS.comments
-        this.getHeight()
-      }, function (response) {
+      const longCommentsUrl = api.contents + commentsId + '/long-comments'
+      axios.get(longCommentsUrl).then(function (response) {
+        console.log(response)
+        _this.longComments = response.data.COMMENTS.comments
+        _this.getHeight()
+      }, function (error) {
         console.log('请求失败')
       })
-      this.$http.get('https://zhihu-daily.leanapp.cn/api/v1/contents/' + commentsId + '/short-comments').then(function (data) {
-        console.log(data)
-        this.shortComments = data.body.COMMENTS.comments
-      }, function (response) {
+
+      const shortCommentsUrl = api.contents + commentsId + '/short-comments'
+      axios.get(shortCommentsUrl).then(function (response) {
+        console.log(response)
+        _this.shortComments = response.data.COMMENTS.comments
+      }, function (error) {
         console.log('请求失败')
       })
     },
