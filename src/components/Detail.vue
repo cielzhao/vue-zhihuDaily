@@ -69,10 +69,10 @@ export default {
     	var _this = this
       this.contentId = window.location.href.split('?')[1].split('=')[1]
       sessionStorage.setItem('commentsId', JSON.stringify(this.contentId))
-      const contentsUrl = api.contents + this.contentId
+      const contentsUrl = api.story + this.contentId
       axios.get(contentsUrl).then(function (response) {
         console.log(response)
-        _this.contentData = response.data.CONTENTS
+        _this.contentData = response.data
       }, function (error) {
         console.log('请求失败')
       })
@@ -80,7 +80,7 @@ export default {
       const extrasUrl = api.extra + this.contentId
       axios.get(extrasUrl).then(function (response) {
         console.log(response)
-        _this.extraData = response.data.DES
+        _this.extraData = response.data
         _this.popularity = _this.extraData.popularity
       }, function (error) {
         console.log('请求失败')

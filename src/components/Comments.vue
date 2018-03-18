@@ -83,19 +83,19 @@ export default {
     fetchData () {
     	var _this = this
       const commentsId = JSON.parse(sessionStorage.getItem('commentsId'))
-      const longCommentsUrl = api.contents + commentsId + '/long-comments'
+      const longCommentsUrl = api.story + commentsId + '/long-comments'
       axios.get(longCommentsUrl).then(function (response) {
         console.log(response)
-        _this.longComments = response.data.COMMENTS.comments
+        _this.longComments = response.data.comments
         _this.getHeight()
       }, function (error) {
         console.log('请求失败')
       })
 
-      const shortCommentsUrl = api.contents + commentsId + '/short-comments'
+      const shortCommentsUrl = api.story + commentsId + '/short-comments'
       axios.get(shortCommentsUrl).then(function (response) {
         console.log(response)
-        _this.shortComments = response.data.COMMENTS.comments
+        _this.shortComments = response.data.comments
       }, function (error) {
         console.log('请求失败')
       })

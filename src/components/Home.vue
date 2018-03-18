@@ -139,10 +139,10 @@ export default {
       axios.get(lastStoriesUrl).then(function (response) {
       	console.log(response)
 				_this.fullscreenLoading = false
-        _this.topStories = response.data.STORIES.top_stories
+        _this.topStories = response.data.top_stories
         var obj = {
         	"date": '今日热闻',
-					"stories": response.data.STORIES.stories
+					"stories": response.data.stories
         }
         _this.stories.push(obj)
       }).catch((error) => {
@@ -155,7 +155,7 @@ export default {
     	_this.addInterceptors()
       axios.get(beforeStoriesUrl).then(function (response) {
 //    	console.info(data)
-        var myDate = response.data.STORIES.date
+        var myDate = response.data.date
         var dateArr = myDate.split('')
         var dateStr = '';
         for(var i=0;i<dateArr.length;i++) {
@@ -167,7 +167,7 @@ export default {
 				var time = myDate.substr(4, 2) + '月' + myDate.substr(6, 2) + '日 星期' + "日一二三四五六".charAt(new Date(dateStr).getDay());
         var obj = {
         	"date": time,
-					"stories": response.data.STORIES.stories
+					"stories": response.data.stories
         }
         _this.stories.push(obj)
       }, function (response) {

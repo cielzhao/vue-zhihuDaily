@@ -71,10 +71,10 @@ export default {
     fetchData () {
     	var _this = this
       this.themeId = window.location.href.split('?')[1].split('=')[1]
-      const themesUrl = api.themes + this.themeId
+      const themesUrl = api.theme + this.themeId
       axios.get(themesUrl).then(function (response) {
         console.log(response)
-        _this.themesContent.push(response.data.THEMEDES)
+        _this.themesContent.push(response.data)
         _this.themesData = _this.themesContent[0]
       }, function (error) {
         console.log('请求失败')

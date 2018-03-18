@@ -51,7 +51,8 @@ export default {
     	var _this = this
     	const themesUrl = api.themes
       axios.get(themesUrl).then(function (response) {
-        _this.themes = response.data.THEMES.others
+      	console.log(response)
+        _this.themes = response.data.others
       }, function (error) {
         console.log('请求失败')
       })
