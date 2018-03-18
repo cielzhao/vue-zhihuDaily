@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.min.css'
 export default {
   props: ['topStories'],
@@ -17,7 +18,7 @@ export default {
     return {
       swiperOption: {
         notNextTick: true,
-        autoplay: 3500,
+        autoplay: true,
         setWrapperSize: true,
         pagination: {
 	        el: '.swiper-pagination',
